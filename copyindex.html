@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Finding Surface Correspondences
+Using Symmetry Axis Curves</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/scrolling-nav.css" rel="stylesheet">
+
+  </head>
+
+  <body id="page-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">Computación Gráfica</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#services">Services</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <header class="bg-primary text-white">
+      <div class="container text-center">
+        <h1>Finding Surface Correspondences
+Using Symmetry Axis Curves</h1>
+        <p class="lead">José Castro Ochante
+
+</p>
+<p class="lead">
+Jose.castro.ochante@ucsp.edu.pe
+</p>
+      </div>
+    </header>
+
+    <section id="about">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <h2>Abstract</h2>
+            
+            <p class="lead" >
+              <FONT size=3>
+              This work, is a one reproduction on the paper finding surface Correspondence using symmetry axis curves. That paper propone an automatic algorithm for finding a correspondence map between two 3D surfaces. To that propose, using the global reflective symmetry axes, since are stable, recognizable, semantic features of most real-world surfaces. It is possible first extracting symmetry axis curves, aligning the extracted curves, and then extrapolating correspondences found on the curves to both surfaces. The main advantages of this approach are efficiency and robustness, for example we used optimal alignment of 1D curves with dynamic programming instead of mapping of two surfaces 2D.
+              </FONT>
+                </p>
+
+                </br>
+                </br>
+
+                <h2>Objetivo</h2>
+            <h5>
+            <p class="lead">
+              <FONT size=3>
+              Implementación de un algoritmo que encuentre la correspondencia entre dos superficies en 3D, esto es; dado dos mallas, M1 y M2  como entrada, debemos debemos encontrar la correspondencia de cada vértice de la malla M1 sobre la malla M2. Como trabajo adicional se hace uso de la GPU para realizar la ejecución de la parte más costosa de cálculo. </p>
+              </FONT>
+            </h5>
+
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <section id="contact">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <h2>Detalles de Implementación</h2>
+            <p class="lead">
+            <FONT size=3>El pipeline para el desarrollo de esta proyecto se muestra en la imagen siguiente:
+            </FONT>
+            </br>
+            <center><img src="img/img17.png" border="0" width="500" height="200"></center>
+
+            </p>
+
+            <p class="lead">
+            <FONT size=3>1. Preprocesamiento de mallas.</br> 
+  Como entrada, el algoritmo necesita de dos mallas, las cuales deben ser preprocesadas para que en los siguientes etapas nos menos complicado extraer las características de las mallas. Como primera sugerencia, es la de trabajar con cada malla sobre su propio eje de simetría, por tal motivo, creamos dos ejes de coordenadas para tener referencias de las mallas. como segunda sugerencia es la trasladar el centroide de las mallas a sus respectivos origen de eje de coordenadas, aquellos es útil, ya que luego necesitaremos crear ecuaciones de planos que pasen por el origen de coordenadas que a la vez coincide con el centroide de la mala.
+De los pasos mencionados anteriormente, encontrar la ecuación de un plano que pase por el centroide de una malla, se a únicamente a encontrar la normal al plano.
+
+            </FONT align="middle">
+            </br>
+
+            <center><img src="img/img18.png" border="0" width="500" height="300"></center>
+            </p>
+
+
+            <p class="lead">
+            <FONT size=3>En las siguientes imagenes se muestran los paso de preprocesamiento mencionado anteriormente, sobre dichas posiciones se realizará los siguientes paso para el mapeo de correspondencia de dos superficies.
+            </FONT>
+            </br>
+            <center><img src="img/img2.png" border="0" width="400" height="300"></center></br>
+            </p>
+
+
+             <p class="lead">
+            <FONT size=3>2. Obtención de curvas de eje de simetría
+ En esta etapa el objetivo es obtener un conjunto de curvas de eje de simetría de cada superficie, estas curvas tienen la características que todos sus puntos(vértices de la malla) son estacionarios bajo la simetría reflexiva. 
+Para este propósito, realizamos reflexiones a través de planos definido por x=0, y=0, z=0 como candidato para una extrínseca simetría reflexiva global. Aquel problema se reduce a que tenemos un conjunto de puntos en 3D y queremos fijar un plano tal que divida el conjunto de puntos uniformemente, en la siguiente imagen se puede mostrar el resultado de aplicar lo comentado.
+            </FONT>
+            </br>
+            <center><img src="img/img12.png" border="0" width="400" height="300"></center>
+            </p>
+
+
+            <p class="lead">
+            <FONT size=3>Como se muestra en la figura, el plano divide uniforme la superficie 3D. Por lo tanto, la idea será crear un conjunto de planos que divida uniformemente la superficie, y luego para cada plano, reflejamos los puntos de la malla a través del plano y calculamos la distancia promedio & a los puntos más cercanos a la malla. Si & es menor que un umbral (e = 0.03sqrt(área de la malla)), entonces aceptamos el plano de reflexión como una simetría intrínseca y creamos un mapeo candidato r tal que para cada vértice v al vértice reflejada sobre el plano sea lo más cercano posible. Al mapeo r es denominado un level set.
+            </FONT>
+            </br>
+            <center><img src="img/veinte.png" border="0" width="300" height="50"></center>
+            </p>
+
+
+
+            <p class="lead">
+            <FONT size=3>El eje de la curva C es luego extraído como un 0-level set se la función L. En nuestro algoritmo nosotros evaluamos a todos los puntos que cumplan que la constante c, sea lo más cercano a 0, con los vértices que cumplen dicha propiedad, luego son agregado al conjunto C, que nos representa eje de simetría global para la malla. Este procedimiento es aplicado a ambas mallas y generado varias veces para luego obtener el mejor eje de simetría de cada malla, a la vez que vamos obteniendo eje de simetría, también vamos calculando la calidad de la curva que es igual a la longitud de la curva. En la siguiente imagen se muestra un curva (la que sobresale con color amarillo) generada por un plano.
+            </FONT>
+            </br>
+            <center><img src="img/img5.png" border="0" width="400" height="300"></center>
+            </p>
+
+
+            <p class="lead">
+            <FONT size=3>3. Alineación de ejes de simetría 
+            En esta etapa el objetivo es encontrar una óptima alineación entre los ejes de simetrías encontradas en la etapa anterior.
+            El problema es ahora que dado dos conjuntos de curvas de eje de simetría, C1 = { C1, C2,..} y C2 = {C2, C2,..} extraído de las mallas M1 y M2, nuestra meta es encontrar un par de ejes de curvas (C1, C2), y una óptima alineación c* que maximice la calidad Q(C i 1 ,C j 2 , c), donde  (1 ≤ i ≤ k1) y  and (1 ≤ j ≤ k2):, aquello es :
+            </FONT>
+            </br>
+            <center><img src="img/img14.png" border="0" width="400" height="300"></center>
+            </p>
+
+
+
+            <p class="lead">
+            <FONT size=3>Se define la calidad de una alineación entre dos curvas como el producto de tres términos:
+            </FONT>
+            </br>
+            <center><img src="img/img15.png" border="0" width="100" height="70"></center>
+            </p>
+
+
+            <p class="lead">
+            <FONT size=3>Los dos primeros términos QAxis(C i 1 ) and QAxis(C j 1 ), ya fueron definido en la etapa anterior. ahora nuestro objetivo es encontrar QAlign(C i 1 ,C j 2 , c), que describe la calidad de una par de alineación c entre dos curvas de eje de simetría.
+            </br>
+QAlign(C i 1 ,C j 2 , c) proporciona una medida de que tan buena es la correspondencia entre dos curvas de eje de simetría C1 y C2. Para tal propósito , para cada par de curvas de eje de simetría , A E {c1} Y b e {C2}, discretizar ambas curvas en un conjunto ordenado uniformemente en  N(200) vértices, por lo cual ahora A={a1,  a200} y B={b1, ...b200}. Luego definimos la calidad de alineación como la inversa de un edit distance de una alineación c.
+
+            </FONT>
+            </br>
+            <center><img src="img/img16.png" border="0" width="100" height="80"></center>
+            </p>
+
+
+
+            <p class="lead">
+            <FONT size=3>Donde Y denota el costo de una operacion edit string. Si usamos % para denotar un string vacio, entonces podemos obtener tres valores en una operacion de edit string, (1) sustitucion (ai->bi) , (2)insercion(a1->%) y (3)eliminacion(%->bj). Una valida alineacion, c, es una secuencia par (a1,b1), (a2, b2)..... donde ai e {A, %} y bj e {B,%} .
+Ahora el algoritmo de edit distancia es definido de la siguiente manera:
+            </FONT>
+            </br>
+            <center><img src="img/img7.png" border="0" width="100" height="80"></center>
+            </p>
+
+
+
+
+            <p class="lead">
+            <FONT size=3>para cada correspondencia asignada con % , se asigna una constante de penalidad: Y(a,%) = Y(b,%) = 0.5. para asignacion entre un par de puntos Y(a,b) se define como la distancia entre ambos puntos.</br>
+
+Cabe destacar que la operacion edit distancia entre dos curvas de ejes de simetria es inversamente a su calidad de alineacion, aquellos tiene sentido, ya que a mayor distancia entre los puntos de correspondencia menor es la calidad de la alineacion
+
+            </FONT>
+            </br>
+            </p>
+
+
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2017</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom JavaScript for this theme -->
+    <script src="js/scrolling-nav.js"></script>
+
+  </body>
+
+</html>
